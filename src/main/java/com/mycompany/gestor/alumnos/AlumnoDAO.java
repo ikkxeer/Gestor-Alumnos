@@ -6,6 +6,8 @@ package com.mycompany.gestor.alumnos;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  * Classe que servirá para realizar las consultas a la base de datos
@@ -35,6 +37,34 @@ public class AlumnoDAO {
             pstm.executeUpdate();
             System.out.println("Alumno " + alumno.nombre + " insertado!");
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public ArrayList<AlumnoDTO> ListarAlumnos(ArrayList<AlumnoDTO> alumnos) {
+        String query = "SELECT id, nombre FROM alumnos";
+        try (PreparedStatement pstm = conn.prepareStatement(query)) {
+            ResultSet rs = pstm.executeQuery();
+                    
+        while(rs.next()) {
+            int id = rs.getInt("id");
+            String nombre = rs.getString("nombre");
+            alumnos.add(new AlumnoDTO(id, nombre));
+        }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return alumnos;
+    }
+    
+    public void EliminarAlumno(int id) {
+        String query = "DELETE FROM alumnos WHERE id = ?";
+        try (PreparedStatement pstm = conn.prepareStatement(query)) {
+            pstm.setInt(1, id);
+            pstm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }

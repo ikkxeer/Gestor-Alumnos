@@ -8,15 +8,18 @@ import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.Timer;
 
 /**
  *
  * @author samui
  */
 public class UIGestorAlumnos extends javax.swing.JFrame {
-    
+    private Timer timer;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UIGestorAlumnos.class.getName());
 
     /**
@@ -30,6 +33,13 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
         ponerPlaceHolder(txtAreaSegundoApellido, "Segundo apellido del alumno");
         ponerPlaceHolder(txtAreaFecha, "XXXX/XX/XX");
         ponerPlaceHolder(txtAreaClasse, "Classe del alumno");
+        
+        // Cargamos los alumnos en cuanto se inicia
+        cargarAlumnos();
+        
+        // Cada 10 segundos actualizamos la lista
+        timer = new Timer(10000, e -> cargarAlumnos());
+        timer.start();
     }
 
     /**
@@ -60,6 +70,10 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
         txtAreaClasse = new javax.swing.JTextArea();
         buttonInsertarAlumno = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        listAlumnos = new javax.swing.JList<>();
+        buttonEliminar = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -171,15 +185,42 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Insertar", jPanel1);
 
+        jScrollPane6.setViewportView(listAlumnos);
+
+        buttonEliminar.setText("Eliminar");
+        buttonEliminar.addActionListener(this::buttonEliminarActionPerformed);
+
+        jLabel6.setText("Lista de alumnos");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 704, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buttonEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 405, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(316, 316, 316)
+                        .addComponent(buttonEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Eliminar", jPanel2);
@@ -238,6 +279,35 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Se ha insertado el alumno en la base de datos!");
         }
     }//GEN-LAST:event_buttonInsertarAlumnoActionPerformed
+
+    private void buttonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEliminarActionPerformed
+        // Obtenemos el alumno seleccionado
+        AlumnoDTO alumnoSeleccionado = listAlumnos.getSelectedValue();
+    
+        // Si no hay ningun alumno seleccionado
+        if(alumnoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona un alumno");
+            return;
+        }
+        
+        // Cuadro para confirmar la eliminacion de un alumno
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Eliminar a " + alumnoSeleccionado.getNombre() + "?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        
+        if(confirmacion == JOptionPane.YES_OPTION) {
+            // Eliminamos al alumno
+            AlumnoDAO gestorAlumnos = new AlumnoDAO();
+            gestorAlumnos.EliminarAlumno(alumnoSeleccionado.getId());
+            // Cargamos la lista de nuevo
+            cargarAlumnos();
+            JOptionPane.showMessageDialog(this, "Alumno eliminado correctamente");
+        }        
+    }//GEN-LAST:event_buttonEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -326,14 +396,35 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
             return false;
         }
     }
+    
+    /**
+     * Funcion para cargar la lista de alumnos
+     */
+    private void cargarAlumnos() {
+        // Obtenemos los alumnos en una lista de strings
+        AlumnoDAO gestorAlumnos = new AlumnoDAO();
+        ArrayList<AlumnoDTO> listaAlumnos = new ArrayList<>();
+        gestorAlumnos.ListarAlumnos(listaAlumnos);
+        
+        // Creamos una model list y agregamos los alumnos
+        DefaultListModel<AlumnoDTO> modeloAlumnos = new DefaultListModel<>();
+        for(AlumnoDTO alumno : listaAlumnos) {
+            modeloAlumnos.addElement(alumno);
+        }
+        
+        // Asignamos a la lista de alumnos el model creado
+        listAlumnos.setModel(modeloAlumnos);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonEliminar;
     private javax.swing.JButton buttonInsertarAlumno;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -342,7 +433,9 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JList<AlumnoDTO> listAlumnos;
     private javax.swing.JTextArea txtAreaClasse;
     private javax.swing.JTextArea txtAreaFecha;
     private javax.swing.JTextArea txtAreaNombre;

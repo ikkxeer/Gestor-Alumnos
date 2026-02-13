@@ -11,6 +11,7 @@ package com.mycompany.gestor.alumnos;
  */
 public class AlumnoDTO {
     // Declaracion de los atributos del alumno
+    public int id;
     public String nombre;
     public String primerApellido;
     public String segundoApellido;
@@ -33,7 +34,18 @@ public class AlumnoDTO {
         this.fechaNacimiento = fechaNacimiento;
         this.classe = classe;
     }
-
+    
+    /**
+     * Constructor parametrizado para alumno con id y nombre
+     * 
+     * @param id Id autogenerado
+     * @param nombre Nombre del alumno
+     */
+    public AlumnoDTO(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+    
     public String getNombre() {
         return nombre;
     }
@@ -52,6 +64,10 @@ public class AlumnoDTO {
 
     public String getClasse() {
         return classe;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setNombre(String nombre) {
@@ -74,4 +90,13 @@ public class AlumnoDTO {
         this.classe = classe;
     }
     
+    /**
+     * Override para mostrar el nombre por default
+     * 
+     * @return Nombre del alumno
+     */
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
