@@ -49,26 +49,30 @@ public class AlumnoDAO {
      * @return Lista de alumnos
      */
     public ArrayList<AlumnoDTO> ListarAlumnos(ArrayList<AlumnoDTO> alumnos) {
-        // Consulta a realizar
-        String query = "SELECT id, nombre FROM alumnos";
-        
+        // Consulta a realizar con todos los campos
+        String query = "SELECT id, nombre, PrimerApellido, SegundoApellido, FechaNacimiento, Classe FROM alumnos";
+
         try (PreparedStatement pstm = conn.prepareStatement(query)) {
-            // Preparamos un result set para guardar la ejecuccion
+            // Preparamos un result set para guardar la ejecución
             ResultSet rs = pstm.executeQuery();
-  
-            // Por cada elemento de la result query
+
+            // Por cada elemento del result query
             while(rs.next()) {
-                // Guardamos el id
+                // Guardamos todos los campos
                 int id = rs.getInt("id");
-                // Guardamos el nombre
                 String nombre = rs.getString("nombre");
-                // Agregamos a la lista el alumno
-                alumnos.add(new AlumnoDTO(id, nombre));
+                String primerApellido = rs.getString("PrimerApellido");
+                String segundoApellido = rs.getString("SegundoApellido");
+                String fechaNacimiento = rs.getString("FechaNacimiento");
+                String classe = rs.getString("Classe");
+
+                // Agregamos a la lista el alumno con todos sus datos
+                alumnos.add(new AlumnoDTO(id, nombre, primerApellido, segundoApellido, fechaNacimiento, classe));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         // Devolvemos la lista de alumnos completa
         return alumnos;
     }
@@ -89,5 +93,23 @@ public class AlumnoDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public void ActualizarAlumno(String nuevoNombre, String nuevoPrimerApellido, String nuevoSegundoApellido, String nuevaFechaNacimiento, String nuevaClasse, int id) {
+            String query = "UPDATE alumnos SET Nombre = ?, PrimerApellido = ?, SegundoApellido = ?, FechaNacimiento = ?, Classe = ? WHERE id = ?";
+            try (PreparedStatement pstm = conn.prepareStatement(query)) {
+                // Ponemos los parametros
+                pstm.setString(1, nuevoNombre);
+                pstm.setString(2, nuevoPrimerApellido);
+                pstm.setString(3, nuevoSegundoApellido);
+                pstm.setString(4, nuevaFechaNacimiento);
+                pstm.setString(5, nuevaClasse);
+                pstm.setInt(6, id);
+                
+                // Ejecutamos el update
+                pstm.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 }

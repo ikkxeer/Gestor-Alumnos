@@ -21,6 +21,25 @@ public class AlumnoDTO {
     /**
      * Constructor de la classe parametrizado
      * 
+     * @param id ID del usuario
+     * @param nombre Nombre del alumno
+     * @param primerApellido Primer apellido del alumno
+     * @param segundoApellido Segundo apellido del alumno
+     * @param fechaNacimiento Fecha de nacimiento del alumno
+     * @param classe Classe del alumno
+     */
+    public AlumnoDTO(int id, String nombre, String primerApellido, String segundoApellido, String fechaNacimiento, String classe) {
+        this.id = id;
+        this.nombre = nombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.fechaNacimiento = fechaNacimiento;
+        this.classe = classe;
+    }
+    
+        /**
+     * Constructor de la classe sin id parametrizado
+     * 
      * @param nombre Nombre del alumno
      * @param primerApellido Primer apellido del alumno
      * @param segundoApellido Segundo apellido del alumno
@@ -33,17 +52,6 @@ public class AlumnoDTO {
         this.segundoApellido = segundoApellido;
         this.fechaNacimiento = fechaNacimiento;
         this.classe = classe;
-    }
-    
-    /**
-     * Constructor parametrizado para alumno con id y nombre
-     * 
-     * @param id Id autogenerado
-     * @param nombre Nombre del alumno
-     */
-    public AlumnoDTO(int id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
     }
     
     public String getNombre() {
