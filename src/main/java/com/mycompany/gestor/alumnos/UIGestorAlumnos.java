@@ -46,9 +46,12 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
         // Monitorizar jList de Updates para modificar
         listAlumnosUpdate.addListSelectionListener(e -> {
         if (!e.getValueIsAdjusting()) {
+            // Obtenemos el alumno seleccionado
             AlumnoDTO alumnoSeleccionado = listAlumnosUpdate.getSelectedValue();
 
+            // Si no es null
                 if (alumnoSeleccionado != null) {
+                    // Mostramos las propiedades del alumno
                     textAreaUpdateNombre.setText(alumnoSeleccionado.getNombre());
                     textAreaUpdatePrimerApellido.setText(alumnoSeleccionado.getPrimerApellido());
                     textAreaUpdateSegundoApellido.setText(alumnoSeleccionado.getSegundoApellido());
@@ -431,6 +434,7 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonInsertarAlumnoActionPerformed
 
     private void buttonActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActualizarActionPerformed
+        // Obtenemos todos los nuevos atributos y el id del usuario seleccionado
         String nuevoNombre = textAreaUpdateNombre.getText();
         String nuevoPrimerApellido = textAreaUpdatePrimerApellido.getText();
         String nuevoSegundoApellido = textAreaUpdateSegundoApellido.getText();
@@ -446,6 +450,7 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
             JOptionPane.YES_NO_OPTION
         );
 
+        // Si confirma la modificacion
         if(confirmacion == JOptionPane.YES_OPTION) {
             // Modificamos el usuario
             gestorAlumnos.ActualizarAlumno(nuevoNombre, nuevoPrimerApellido, nuevoSegundoApellido, nuevaFechaNacimiento, nuevaClasse, id);
