@@ -42,28 +42,49 @@ public class AlumnoDAO {
         }
     }
     
+    /**
+     * Funcion para listar alumnos
+     * 
+     * @param alumnos Lista de alumnos
+     * @return Lista de alumnos
+     */
     public ArrayList<AlumnoDTO> ListarAlumnos(ArrayList<AlumnoDTO> alumnos) {
+        // Consulta a realizar
         String query = "SELECT id, nombre FROM alumnos";
+        
         try (PreparedStatement pstm = conn.prepareStatement(query)) {
+            // Preparamos un result set para guardar la ejecuccion
             ResultSet rs = pstm.executeQuery();
-                    
-        while(rs.next()) {
-            int id = rs.getInt("id");
-            String nombre = rs.getString("nombre");
-            alumnos.add(new AlumnoDTO(id, nombre));
-        }
-
+  
+            // Por cada elemento de la result query
+            while(rs.next()) {
+                // Guardamos el id
+                int id = rs.getInt("id");
+                // Guardamos el nombre
+                String nombre = rs.getString("nombre");
+                // Agregamos a la lista el alumno
+                alumnos.add(new AlumnoDTO(id, nombre));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         
+        // Devolvemos la lista de alumnos completa
         return alumnos;
     }
     
+    /**
+     * Funcion para eliminar un alumno con su id
+     * 
+     * @param id Id del alumno a eliminar
+     */
     public void EliminarAlumno(int id) {
+        // Consulta a realizar
         String query = "DELETE FROM alumnos WHERE id = ?";
         try (PreparedStatement pstm = conn.prepareStatement(query)) {
+            // Ponemos el id segun el que nos han pasado
             pstm.setInt(1, id);
+            // Ejecutamos el delete
             pstm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

@@ -20,6 +20,7 @@ import javax.swing.Timer;
  */
 public class UIGestorAlumnos extends javax.swing.JFrame {
     private Timer timer;
+    public AlumnoDAO gestorAlumnos = new AlumnoDAO();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UIGestorAlumnos.class.getName());
 
     /**
@@ -28,6 +29,8 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
     public UIGestorAlumnos() {
         initComponents();
         super.setTitle("Gestor de Alumnos - IkerAramburu");
+                
+        // Placeholders
         ponerPlaceHolder(txtAreaNombre, "Nombre del alumno");
         ponerPlaceHolder(txtAreaPrimerApellido, "Primer apellido del alumno");
         ponerPlaceHolder(txtAreaSegundoApellido, "Segundo apellido del alumno");
@@ -274,7 +277,6 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
             
             AlumnoDTO alumnoAInsertar = new AlumnoDTO(nombre, primerApellido, segundoApellido, fecha, classe);
             
-            AlumnoDAO gestorAlumnos = new AlumnoDAO();
             gestorAlumnos.InsertarAlumno(alumnoAInsertar);
             JOptionPane.showMessageDialog(this, "Se ha insertado el alumno en la base de datos!");
         }
@@ -301,7 +303,6 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
         
         if(confirmacion == JOptionPane.YES_OPTION) {
             // Eliminamos al alumno
-            AlumnoDAO gestorAlumnos = new AlumnoDAO();
             gestorAlumnos.EliminarAlumno(alumnoSeleccionado.getId());
             // Cargamos la lista de nuevo
             cargarAlumnos();
@@ -402,7 +403,6 @@ public class UIGestorAlumnos extends javax.swing.JFrame {
      */
     private void cargarAlumnos() {
         // Obtenemos los alumnos en una lista de strings
-        AlumnoDAO gestorAlumnos = new AlumnoDAO();
         ArrayList<AlumnoDTO> listaAlumnos = new ArrayList<>();
         gestorAlumnos.ListarAlumnos(listaAlumnos);
         
